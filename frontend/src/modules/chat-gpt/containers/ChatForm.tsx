@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import ChatBlock from '../components/ChatBlock';
+import useEventSource from '../hooks/useEventSource';
 
 const ChatForm = () => {
   const [newMessage, setNewMessage] = useState('');
+  const [chatContent, setcChatContent] = useState('');
   const [chatItem, setChatItem] = useState<any>(null)
 
   const handleKeyPress = (event: any) => {
@@ -11,24 +13,15 @@ const ChatForm = () => {
     }
   };
 
+  useEventSource('chat-gpt/stream', chatContent, (data: string) => {
+    setChatItem((prevState: any) => ({...prevState, answer: prevState.answer + data}))
+  });
+  
+
   const getAnswer = () => {
     setChatItem({question: newMessage, answer: ''});
+    setcChatContent(newMessage);
     setNewMessage('');
-    const eventSource = new EventSource(`${process.env.NEXT_PUBLIC_API_URL}/chat-gpt/stream?content=${newMessage}`);
-
-
-    eventSource.onmessage = (event) => {
-      const { data } = event;
-      setChatItem((prevState: any) => ({...prevState, answer: prevState.answer + data}))
-    };
-
-    eventSource.onerror = (error) => {
-      eventSource.close();
-    };
-
-    return () => {
-      eventSource.close();
-    };
   }
 
   return (
