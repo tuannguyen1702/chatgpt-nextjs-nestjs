@@ -23,10 +23,6 @@ Make sure you have the following software and tools installed:
 7. Configure fronend settings:
    - Open the `.env` file in the frontend directory & update API endpoint (if you changed server port).
 
-## Database Setup
-
-1. Make sure MongoDB is running on your system.
-2. Update the database connection details in the server's `.env` file.
 
 ## Running the Application
 
