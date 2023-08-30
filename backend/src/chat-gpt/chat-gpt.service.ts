@@ -9,7 +9,7 @@ export class ChatGptService {
     constructor(
         private configService: ConfigService
     ) {
-        this.openai = new OpenAI({ apiKey: this.configService.get<string>('OPENAI_KEY') });
+        this.openai = new OpenAI({ apiKey: this.configService.get<string>('openai.apiKey') });
     }
     getStreamData(content: string): Observable<{ data: MessageEvent; }> {
         return new Observable((subscriber) => {
@@ -29,7 +29,7 @@ export class ChatGptService {
                         if (res?.finish_reason === 'stop') {
                             subscriber.complete();
                         } else {
-                            subscriber.next({ data: res } as MessageEvent);
+                            subscriber.next({ data: res?.delta?.content } as MessageEvent);
                         }
                     }
                 } catch (error) {
